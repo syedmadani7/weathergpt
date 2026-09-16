@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.py[cod]
+.pytest_cache/
+node_modules/
+build/
+dist/
+.DS_Store
+*.log
+.idea/
+*.private.env.json

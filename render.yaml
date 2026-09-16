@@ -1,0 +1,59 @@
+services:
+  # -------------------------------------------------------------
+  # 1. Backend Service (FastAPI + Python)
+  # -------------------------------------------------------------
+  - type: web
+    name: meteora-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: DATABASE_URL
+        fromDatabase:
+          name: meteora-db
+          property: connectionString
+      - key: CORS_ORIGINS
+        fromService:
+          type: web
+          name: meteora-frontend
+          property: hostUrl
+      - key: OPENWEATHER_API_KEY
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: GROQ_MODEL
+        value: openai/gpt-oss-20b
+
+  # -------------------------------------------------------------
+  # 2. Frontend Service (React SPA Static Site)
+  # -------------------------------------------------------------
+  - type: web
+    name: meteora-frontend
+    runtime: static
+    rootDir: frontend
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: build
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: REACT_APP_API_URL
+        fromService:
+          type: web
+          name: meteora-backend
+          property: hostUrl
+
+# -------------------------------------------------------------
+# 3. Managed PostgreSQL Database
+# -------------------------------------------------------------
+databases:
+  - name: meteora-db
+    plan: free
+    databaseName: weathergpt
+    user: weathergpt
