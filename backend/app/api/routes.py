@@ -24,9 +24,10 @@ class QueryRequest(BaseModel):
     session_id: str | None = None
 
 
-@router.get("/health")
+@router.api_route("/health", methods=["GET", "HEAD"])
 async def health():
     return {"status": "ok", "service": "WeatherGPT"}
+
 
 
 @router.get("/status")

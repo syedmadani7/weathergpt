@@ -33,6 +33,7 @@ app.include_router(api_router)
 app.include_router(ws_router)
 
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 async def root():
     return {"name": "WeatherGPT", "status": "running", "docs": "/docs"}
+
