@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     openweather_api_key: str = ""
     groq_api_key: str = ""
     groq_model: str = "openai/gpt-oss-20b"
-    database_url: str = "postgresql+psycopg://weathergpt:weathergpt@db:5432/weathergpt"
+    database_url: str = "sqlite:///./weathergpt.db"
 
     @field_validator("database_url", mode="before")
     @classmethod
@@ -24,7 +24,7 @@ class Settings(BaseSettings):
                 return v.replace("postgresql://", "postgresql+psycopg://", 1)
         return v
     redis_url: str = "redis://redis:6379/0"
-    cors_origins: str = "http://localhost:3000"
+    cors_origins: str = "http://localhost:3000,https://meteora1503.netlify.app"
     default_language: str = "en"
     supported_languages: str = "en,hi,ta,te,bn,mr,gu,kn,ml,pa,or"
     weather_cache_ttl: int = 300
